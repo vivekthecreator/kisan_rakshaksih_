@@ -8,25 +8,25 @@ import { cropDatabase } from '../../data/cropData';
 import { getAllPlotHistories, getPlotHistory, appendScanToHistory, evaluateFollowUpOutcome } from '../../data/progressiveScanHistory';
 
 const CROP_OPTIONS = [
-  { id: 'tomato', name: 'Tomato', icon: 'ðŸ…' },
-  { id: 'potato', name: 'Potato', icon: 'ðŸ¥”' },
-  { id: 'corn', name: 'Corn (Maize)', icon: 'ðŸŒ½' },
-  { id: 'apple', name: 'Apple', icon: 'ðŸ' },
-  { id: 'wheat', name: 'Wheat', icon: 'ðŸŒ¾' },
-  { id: 'grape', name: 'Grape', icon: 'ðŸ‡' },
-  { id: 'bell-pepper', name: 'Bell Pepper', icon: 'ðŸ«‘' },
-  { id: 'onion', name: 'Onion', icon: 'ðŸ§…' },
-  { id: 'soybean', name: 'Soybean', icon: 'ðŸŒ¿' },
-  { id: 'strawberry', name: 'Strawberry', icon: 'ðŸ“' },
+  { id: 'tomato', name: 'Tomato', icon: 'Ã°Å¸Ââ€¦' },
+  { id: 'potato', name: 'Potato', icon: 'Ã°Å¸Â¥â€' },
+  { id: 'corn', name: 'Corn (Maize)', icon: 'Ã°Å¸Å’Â½' },
+  { id: 'apple', name: 'Apple', icon: 'Ã°Å¸ÂÂ' },
+  { id: 'wheat', name: 'Wheat', icon: 'Ã°Å¸Å’Â¾' },
+  { id: 'grape', name: 'Grape', icon: 'Ã°Å¸Ââ€¡' },
+  { id: 'bell-pepper', name: 'Bell Pepper', icon: 'Ã°Å¸Â«â€˜' },
+  { id: 'onion', name: 'Onion', icon: 'Ã°Å¸Â§â€¦' },
+  { id: 'soybean', name: 'Soybean', icon: 'Ã°Å¸Å’Â¿' },
+  { id: 'strawberry', name: 'Strawberry', icon: 'Ã°Å¸Ââ€œ' },
 ];
 
 const STAGE_OPTIONS = [
-  { id: 'seedling', name: 'Seedling', icon: 'ðŸŒ±' },
-  { id: 'vegetative', name: 'Vegetative', icon: 'ðŸŒ¿' },
-  { id: 'flowering', name: 'Flowering', icon: 'ðŸŒ¸' },
-  { id: 'fruiting', name: 'Fruiting', icon: 'ðŸ…' },
-  { id: 'mature', name: 'Mature / Harvest', icon: 'ðŸŒ¾' },
-  { id: 'post-harvest', name: 'Post-Harvest', icon: 'ðŸ‚' },
+  { id: 'seedling', name: 'Seedling', icon: 'Ã°Å¸Å’Â±' },
+  { id: 'vegetative', name: 'Vegetative', icon: 'Ã°Å¸Å’Â¿' },
+  { id: 'flowering', name: 'Flowering', icon: 'Ã°Å¸Å’Â¸' },
+  { id: 'fruiting', name: 'Fruiting', icon: 'Ã°Å¸Ââ€¦' },
+  { id: 'mature', name: 'Mature / Harvest', icon: 'Ã°Å¸Å’Â¾' },
+  { id: 'post-harvest', name: 'Post-Harvest', icon: 'Ã°Å¸Ââ€š' },
 ];
 
 export default function ScanModal({ isOpen, onClose, initialPlot }) {
@@ -74,7 +74,7 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
         if (found) setSelectedCrop(found);
       }
       if (initialPlot.plotLocation) {
-        setFieldName(initialPlot.plotLocation.split('â€¢')[0].trim());
+        setFieldName(initialPlot.plotLocation.split('Ã¢â‚¬Â¢')[0].trim());
       }
     }
   }, [initialPlot]);
@@ -94,7 +94,7 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
     if (hist) {
       const foundCrop = CROP_OPTIONS.find(c => c.name.toLowerCase().includes(hist.cropName.toLowerCase()));
       if (foundCrop) setSelectedCrop(foundCrop);
-      setFieldName(hist.plotLocation ? hist.plotLocation.split('â€¢')[0].trim() : hist.cropName);
+      setFieldName(hist.plotLocation ? hist.plotLocation.split('Ã¢â‚¬Â¢')[0].trim() : hist.cropName);
       const foundStage = STAGE_OPTIONS.find(s => s.name.toLowerCase().includes(hist.currentStage.toLowerCase()));
       if (foundStage) setSelectedStage(foundStage);
     }
@@ -168,9 +168,9 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
             .then(d => {
               const addr = d.address;
               const loc = [addr.village || addr.town || addr.city || addr.county, addr.state].filter(Boolean).join(', ');
-              setUserLocation(loc || `${pos.coords.latitude.toFixed(4)}Â°N, ${pos.coords.longitude.toFixed(4)}Â°E`);
+              setUserLocation(loc || `${pos.coords.latitude.toFixed(4)}Ã‚Â°N, ${pos.coords.longitude.toFixed(4)}Ã‚Â°E`);
             })
-            .catch(() => setUserLocation(`${pos.coords.latitude.toFixed(4)}Â°N, ${pos.coords.longitude.toFixed(4)}Â°E`));
+            .catch(() => setUserLocation(`${pos.coords.latitude.toFixed(4)}Ã‚Â°N, ${pos.coords.longitude.toFixed(4)}Ã‚Â°E`));
         },
         () => setUserLocation('Location unavailable')
       );
@@ -239,21 +239,22 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
     try {
       setTimeout(() => setAnalysisStep('Inspecting lesion patterns and fungal morphology...'), 700);
       setTimeout(() => setAnalysisStep('Formulating precautions and remedies...'), 1500);
+      const apiBase = import.meta.env.VITE_API_URL || '';
       const payload = {
-        crop: selectedCrop ? selectedCrop.name : 'Tomato',
-        growthStage: selectedStage ? selectedStage.name : 'Seedling',
-        fieldName: fieldName || 'Field A',
-        symptoms: symptoms || '',
         weatherInfo: 'Temperature 26C, Humidity 84%, Rain expected in 7h',
         imageBase64: img && img.startsWith('data:') ? img : null,
       };
-      const res = await fetch('/api/diagnose', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const res = await fetch(`${apiBase}/api/diagnose`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
       const json = await res.json();
       if (json.success && json.data) { setDiagnosisResult(json.data); setModelUsed(json.modelUsed || 'Gemini AI'); }
       else throw new Error(json.error || 'Failed');
     } catch (err) {
-      const key = selectedCrop ? selectedCrop.id : 'tomato';
-      const fb = cropDatabase.find(c => c.id.includes(key)) || cropDatabase[0];
+      console.error('Diagnose error:', err);
+      const fb = cropDatabase[0];
       setDiagnosisResult({
         diseaseName: fb.disease, pathogen: fb.pathogen, confidence: fb.confidence, severity: fb.severity,
         simpleExplanation: fb.description, immediateAction: 'Prune diseased leaves and stop overhead watering.',
@@ -263,6 +264,7 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
       setModelUsed('Kisan Rakshak Offline Engine');
     } finally { setIsAnalyzing(false); }
   };
+
 
   const handleReset = () => {
     setDiagnosisResult(null); setUploadedImage(null); setCapturedFrame(null);
@@ -291,7 +293,7 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
               </span>
             </div>
             <h2 className="text-2xl font-extrabold text-[#1a4d2e]">Crop Disease Scanner</h2>
-            <p className="text-xs text-gray-500 mt-0.5">Upload a photo or use the live camera â€” both use Gemini AI.</p>
+            <p className="text-xs text-gray-500 mt-0.5">Upload a photo or use the live camera Ã¢â‚¬â€ both use Gemini AI.</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 cursor-pointer mt-1">
             <X className="w-5 h-5" />
@@ -424,7 +426,7 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
                   <div className="flex items-center gap-2 text-xs">
                     <Info className="w-3.5 h-3.5 text-gray-400" />
                     {cameraActive
-                      ? <span className="text-emerald-700 font-medium">Camera live â€” position crop and tap capture</span>
+                      ? <span className="text-emerald-700 font-medium">Camera live Ã¢â‚¬â€ position crop and tap capture</span>
                       : <span className="text-gray-500">Camera permission required for live scanning.</span>}
                   </div>
                   {cameraActive && (
@@ -507,7 +509,7 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
                   <div className="p-3.5 rounded-xl bg-[#edf7ef] border border-green-200">
                     <h5 className="text-[11px] font-bold text-green-900 uppercase mb-1.5 flex items-center gap-1.5"><Leaf className="w-3.5 h-3.5" /> Organic:</h5>
                     <ul className="space-y-1 text-xs text-gray-700">
-                      {diagnosisResult.organicRemedies.map((r, i) => <li key={i} className="flex items-start gap-1.5"><span className="text-[#257038] font-bold">â€¢</span><span>{r}</span></li>)}
+                      {diagnosisResult.organicRemedies.map((r, i) => <li key={i} className="flex items-start gap-1.5"><span className="text-[#257038] font-bold">Ã¢â‚¬Â¢</span><span>{r}</span></li>)}
                     </ul>
                   </div>
                 )}
@@ -515,7 +517,7 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
                   <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
                     <h5 className="text-[11px] font-bold text-gray-900 uppercase mb-1.5 flex items-center gap-1.5"><ShieldAlert className="w-3.5 h-3.5 text-[#257038]" /> Chemical:</h5>
                     <ul className="space-y-1 text-xs text-gray-700">
-                      {diagnosisResult.chemicalTreatments.map((c, i) => <li key={i} className="flex items-start gap-1.5"><span className="text-[#257038] font-bold">â€¢</span><span>{c}</span></li>)}
+                      {diagnosisResult.chemicalTreatments.map((c, i) => <li key={i} className="flex items-start gap-1.5"><span className="text-[#257038] font-bold">Ã¢â‚¬Â¢</span><span>{c}</span></li>)}
                     </ul>
                   </div>
                 )}
@@ -559,7 +561,7 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
                         }`}
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>Yes, Treatment Worked âœ“</span>
+                        <span>Yes, Treatment Worked Ã¢Å“â€œ</span>
                       </button>
 
                       <button
@@ -572,7 +574,7 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
                         }`}
                       >
                         <AlertTriangle className="w-3.5 h-3.5" />
-                        <span>No, Disease Resisted / Spread âš ï¸</span>
+                        <span>No, Disease Resisted / Spread Ã¢Å¡Â Ã¯Â¸Â</span>
                       </button>
                     </div>
                   </div>
@@ -586,8 +588,8 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
                       <p className="font-bold flex items-center gap-1.5">
                         {treatmentOutcomeWorked ? <Check className="w-4 h-4 text-emerald-700" /> : <AlertTriangle className="w-4 h-4 text-amber-700" />}
                         {treatmentOutcomeWorked
-                          ? 'Treatment Effective â€¢ Lesions Controlled'
-                          : 'Resistance Detected â€¢ New Adaptive Tactic Deployed'}
+                          ? 'Treatment Effective Ã¢â‚¬Â¢ Lesions Controlled'
+                          : 'Resistance Detected Ã¢â‚¬Â¢ New Adaptive Tactic Deployed'}
                       </p>
                       <p className="mt-1 text-gray-700">
                         {treatmentOutcomeWorked
@@ -604,7 +606,7 @@ export default function ScanModal({ isOpen, onClose, initialPlot }) {
                     className="w-full py-2.5 px-4 rounded-xl bg-[#206332] hover:bg-[#184e27] text-white text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xs disabled:opacity-60"
                   >
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>{savedToHistory ? 'âœ“ Saved to Plot Health Diary!' : 'Save Follow-Up Scan to Health Diary'}</span>
+                    <span>{savedToHistory ? 'Ã¢Å“â€œ Saved to Plot Health Diary!' : 'Save Follow-Up Scan to Health Diary'}</span>
                   </button>
                 </div>
               )}
